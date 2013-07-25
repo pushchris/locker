@@ -1,11 +1,9 @@
-var adapter = function(type, name, callback) {
-	this.type = type;
-	this.name = name;
+var adapter = function(callback) {
 	this.content = callback;
 
 	this.retrive = function(callback) {
 		this.content(function(content) {
-			callback(type, name, content);
+			callback(content);
 		});
 	}
 }

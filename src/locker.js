@@ -1,4 +1,5 @@
 var fs = require('fs'),
+	util = require('util'),
 	path = require('path');
 
 var Adapter = require('./adapter'),
@@ -6,15 +7,24 @@ var Adapter = require('./adapter'),
 
 var locker = function() {
 
+	events.EventEmitter.call(this);
+
 	this.adapters = [];
 	this.directory = "adapters";
+	this.tempo = 15 * 60 * 1000; //Every 15 minutes
 
 	this.start = function() {
+		var _this = this;
+
 		this.findAdapters();
+
+		this.on('loaded', function() {
+			_this.fetchInterval();
+		});
 	}
 
-	this.add = function(type, name, callback) {
-		this.adapters.push(new Adapter(type, name, callback));
+	this.add = function(callback) {
+		this.adapters.push(new Adapter(callback));
 	}
 
 	this.store = function() {
@@ -40,7 +50,17 @@ var locker = function() {
 				}
 			}
 		});
+		this.emit("loaded");
+	}
+
+	this.fetchInterval = function() {
+		var _this = this;
+		this.interval = setInterval(function() {
+			_this.store();
+		}, this.tempo);
 	}
 }
+
+util.inherits(locker, events.EventEmitter);
 
 exports.locker = locker;

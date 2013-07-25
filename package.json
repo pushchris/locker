@@ -3,6 +3,9 @@
   "version": "0.0.1",
   "description": "A storage facility and messenger boy for your data",
   "main": "index.js",
+  "dependencies": {
+    "mongoose": "x"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
