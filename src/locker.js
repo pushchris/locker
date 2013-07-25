@@ -3,6 +3,7 @@ var fs = require('fs'),
 	path = require('path');
 
 var Adapter = require('./adapter'),
+	Image = require('./image'),
 	Block = require('./schema/Block');
 
 var locker = function() {
@@ -28,8 +29,30 @@ var locker = function() {
 	}
 
 	this.store = function() {
-		for(adapter in this.adapters) {
-			Block.store(this.adapters[adapter]);
+		for(i in this.adapters) {
+			this.adapters[i].retrieve(function(content) {
+				if(Array.isArray(content)) {
+					for(item in content) {
+						process(content, function(err, content) {
+							Block.store(content);
+						})
+					}
+				} else {
+					process(content, function(err, content) {
+						Block.store(content);
+					});
+				}
+			});
+			
+		}
+		function process(content, callback) {
+			if(content.type =="image") {
+				Image.process(content.url, function(urls) {
+					content.url = urls;
+				});
+			} else {
+				callback(null, content);
+			}
 		}
 	}
 

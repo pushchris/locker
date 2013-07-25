@@ -4,7 +4,8 @@
   "description": "A storage facility and messenger boy for your data",
   "main": "index.js",
   "dependencies": {
-    "mongoose": "x"
+    "mongoose": "x",
+    "paperboy": "x"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

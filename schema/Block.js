@@ -12,20 +12,7 @@ BlockSchema.methods.store = function(adapter, callback) {
 	if(!callback) callback = function(){};
 
 	var Block = this.model('Block');
-	var entry;
-
-	adapter.retrieve(function(content) {
-		if(Array.isArray(content)) {
-			for(item in content) {
-				store(content[item]);
-			}
-		} else {
-			store(content);
-		}
-	});
-
-	function store(item) {
-		entry = new Block(item).save(function(err, entry) {
+	var entry = new Block(item).save(function(err, entry) {
 			callback(err, entry);
 		});
 	}
