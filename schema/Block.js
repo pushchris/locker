@@ -5,7 +5,8 @@ var BlockSchema = new Schema({
     type: { type: String, required: true },
     name: { type: String },
     content: mongoose.Schema.Types.Mixed,
-    tags: { type: [String] }
+    tags: { type: [String] },
+    date: { type: Date, default: Date.now }
 });
 
 BlockSchema.methods.store = function(item, callback) {
@@ -24,6 +25,16 @@ BlockSchema.methods.retrieve = function(type, name, callback) {
 
     this.model('Block').find({ type: type, name: name }, function(err, results) {
         callback(err, results);
+    });
+}
+
+BlockSchema.methods.lastWas = function(type, name, callback) {
+
+    if(!callback) callback = function(){};
+
+    this.model('Block').findOne({ type: type, name: name })
+        .sort({date : -1}).exec(function(err, result) {
+        callback(err, result.date);
     });
 }
 

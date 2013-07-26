@@ -22,7 +22,7 @@ var locker = function() {
 
 	this.adapters = [];
 	this.directory = "adapters";
-	this.tempo = 6 * 1000; //Every 15 minutes
+	this.tempo = 6 * 1000;
 
 	this.start = function() {
 		var _this = this;
@@ -69,6 +69,10 @@ var locker = function() {
 
 	this.retrieve = function(type, name, callback) {
 		Block.retrieve(type, name, callback);
+	}
+
+	this.lastWas = function(type, name, callback) {
+		Block.lastWas(type, name, callback);
 	}
 
 	this.findAdapters = function() {

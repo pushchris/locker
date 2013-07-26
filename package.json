@@ -6,7 +6,8 @@
   "dependencies": {
     "mongoose": "x",
     "papercut": "x",
-    "http-get": "x"
+    "http-get": "x",
+    "tumblr": "x"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
