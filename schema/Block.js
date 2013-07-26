@@ -34,7 +34,11 @@ BlockSchema.methods.lastWas = function(type, name, callback) {
 
     this.model('Block').findOne({ type: type, name: name })
         .sort({date : -1}).exec(function(err, result) {
-        callback(err, result.date);
+        if(err) {
+            callback(err, null);
+        } else {
+            callback(err, result.date);
+        }
     });
 }
 

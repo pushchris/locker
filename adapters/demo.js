@@ -1,19 +1,4 @@
-
-var TempoDBClient = require('tempodb').TempoDBClient,
-    config = require('../config.json'),
-    tempodb = new TempoDBClient(config.tempodb.key, config.tempodb.secret);
-
-
 module.exports = function(locker) {
-
-    var options = {
-        interval: '1min',
-        tz: 'America/Chicago'
-    }
-
-    var fetch = function(series, date) {
-        tempo.read_key(series, )
-    }
     
     locker.add(function(callback) {
         

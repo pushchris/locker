@@ -6,9 +6,9 @@ var papercut = require('papercut'),
 
 papercut.configure(function(){
 	papercut.set('storage', 's3');
-	papercut.set('S3_KEY', config.S3_KEY);
-	papercut.set('S3_SECRET', config.S3_SECRET);
-	papercut.set('bucket', config.S3_BUCKET);
+	papercut.set('S3_KEY', config.s3.key);
+	papercut.set('S3_SECRET', config.s3.secret);
+	papercut.set('bucket', config.s3.bucket);
 });
 
 var Uploader = papercut.Schema(function(schema){

@@ -4,8 +4,4 @@ module.exports.Locker = Locker;
 
 var locker = new Locker();
 
-locker.config = {
-
-}
-
 locker.start();

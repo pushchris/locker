@@ -43,7 +43,10 @@ module.exports = function(locker) {
     }
     
     locker.add(function(callback) {
-        locker.lastWas('image', 'tumblr', function(date) {
+        locker.lastWas('image', 'tumblr', function(err, date) {
+            if(err || !date) {
+                date = locker.startDate;
+            }
             fetch(date, function(images) {
                 callback(images);
             });

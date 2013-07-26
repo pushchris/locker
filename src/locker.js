@@ -7,9 +7,9 @@ var fs = require('fs'),
 	
 var db = mongoose.connect(config.uristring, function (err, res) {
 	if (err)
-		console.log ('ERROR connecting to: ' + config.uristring + '. ' + err);
+		console.error('ERROR connecting to: ' + config.uristring + '. ' + err);
 	else
-		console.log ('Succeeded connected to: ' + config.uristring);
+		console.log('Succeeded connected to: ' + config.uristring);
 });
 
 var Adapter = require('./adapter'),
@@ -23,6 +23,7 @@ var locker = function() {
 	this.adapters = [];
 	this.directory = "adapters";
 	this.tempo = 6 * 1000;
+	this.startDate = new Date('1975-01-01');
 
 	this.start = function() {
 		var _this = this;
