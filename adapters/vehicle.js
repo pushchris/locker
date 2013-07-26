@@ -1,42 +1,58 @@
-TempoDBClient = require('tempodb').TempoDBClient,
-	tempodb = new TempoDBClient(API_KEY, API_SECRET);
+/*
+var TempoDBClient = require('tempodb').TempoDBClient,
+    tempodb = new TempoDBClient(API_KEY, API_SECRET);
+*/
 
 module.exports = function(locker) {
 
-	var data = {};
+    var data = {};
 
-	var fetch = function(type) {
-		data[type].shift().push();
-	}
-	
-	locker.add(function() {
-		/* 
-			Return content in format: 
-			{ 
-				name: "Vehicle Speed",
-				type: "metric",
-				x: 0,
-				y: 0,
-				xtitle: "Time",
-				ytitle: "Speed",
-				tags: ["vehicle", "speed", "velocity", "car"]
-			}
-		*/
-	});
+    var fetch = function(type) {
+        data[type].shift().push();
+    }
+    
+    locker.add(function(callback) {
+        
+            //Return content in format: 
+            callback({ 
+                name: "Vehicle Speed",
+                type: "metric",
+                content: {
+                    x: 0,
+                    y: 0,
+                    xtitle: "Time",
+                    ytitle: "Speed"
+                },
+                tags: ["vehicle", "speed", "velocity", "car"]
+            });
+    });
 
-	locker.add(function() {
-		/* 
-			Return content in format: 
-			{ 
-				name: "Vehicle RPM",
-				type: "metric",
-				x: 0,
-				y: 0,
-				xtitle: "Time",
-				ytitle: "Revolutions Per Minute",
-				tags: ["vehicle", "rpm", "revolutions", "car"]
-			}
-		*/
-	})
+    locker.add(function(callback) {
+         
+            //Return content in format: 
+            callback({  
+                name: "Vehicle RPM",
+                type: "metric",
+                content: {
+                    x: 0,
+                    y: 0,
+                    xtitle: "Time",
+                    ytitle: "Revolutions Per Minute"
+                },
+                tags: ["vehicle", "rpm", "revolutions", "car"]
+            });
+        
+    });
+    
+    locker.add(function(callback) {
+        callback({  
+            name: "Image test",
+            type: "image",
+            content: {
+                url: "http://24.media.tumblr.com/tumblr_mc6vgcDUEK1qmbg8bo1_500.jpg"
+            },
+            tags: ["vehicle", "rpm", "revolutions", "car"]
+        });
+    });
 
 }

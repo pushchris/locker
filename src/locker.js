@@ -1,10 +1,20 @@
 var fs = require('fs'),
 	util = require('util'),
-	path = require('path');
+	events = require('events'),
+	path = require('path'),
+	mongoose = require('mongoose'),
+	config = require('../config.json');
+	
+var db = mongoose.connect(config.uristring, function (err, res) {
+	if (err)
+		console.log ('ERROR connecting to: ' + config.uristring + '. ' + err);
+	else
+		console.log ('Succeeded connected to: ' + config.uristring);
+});
 
 var Adapter = require('./adapter'),
 	Image = require('./image'),
-	Block = require('./schema/Block');
+	Block = require('../schema/Block');
 
 var locker = function() {
 
@@ -12,16 +22,16 @@ var locker = function() {
 
 	this.adapters = [];
 	this.directory = "adapters";
-	this.tempo = 15 * 60 * 1000; //Every 15 minutes
+	this.tempo = 6 * 1000; //Every 15 minutes
 
 	this.start = function() {
 		var _this = this;
 
-		this.findAdapters();
-
-		this.on('loaded', function() {
+        this.on('loaded', function() {
 			_this.fetchInterval();
 		});
+		
+		this.findAdapters();
 	}
 
 	this.add = function(callback) {
@@ -31,24 +41,25 @@ var locker = function() {
 	this.store = function() {
 		for(i in this.adapters) {
 			this.adapters[i].retrieve(function(content) {
+			    var block = new Block();
 				if(Array.isArray(content)) {
 					for(item in content) {
 						process(content, function(err, content) {
-							Block.store(content);
+							block.store(content);
 						})
 					}
 				} else {
 					process(content, function(err, content) {
-						Block.store(content);
+						block.store(content);
 					});
 				}
 			});
-			
 		}
 		function process(content, callback) {
 			if(content.type =="image") {
-				Image.process(content.url, function(urls) {
-					content.url = urls;
+				Image.process(content.content.url, function(err, urls) {
+					content.content.url = urls;
+					callback(err, content);
 				});
 			} else {
 				callback(null, content);
@@ -61,19 +72,22 @@ var locker = function() {
 	}
 
 	this.findAdapters = function() {
+	    var _this = this,
+	        i = 0;
 		fs.readdir(this.directory, function(err, files) {
 			if(err)
 				throw err;
 			for(file in files) {
 				try {
-					require(packages[pkg])(this);
+					require("../" + _this.directory + "/" + files[file])(_this);
 				} catch(e) {
 					console.error("Unable to load adapter - "+ e);
 					process.exit(1);
 				}
+				if(++i >= files.length)
+				    _this.emit("loaded");
 			}
 		});
-		this.emit("loaded");
 	}
 
 	this.fetchInterval = function() {
@@ -86,4 +100,4 @@ var locker = function() {
 
 util.inherits(locker, events.EventEmitter);
 
-exports.locker = locker;
+module.exports = locker;

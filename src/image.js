@@ -1,7 +1,10 @@
 var papercut = require('papercut'),
-	config = require('./config.js');
+    path = require('path'),
+    fs = require('fs'),
+    http = require('http-get'),
+	config = require('../config.json');
 
-papercut.configure('production', function(){
+papercut.configure(function(){
 	papercut.set('storage', 's3');
 	papercut.set('S3_KEY', config.S3_KEY);
 	papercut.set('S3_SECRET', config.S3_SECRET);
@@ -41,8 +44,24 @@ var Uploader = papercut.Schema(function(schema){
 
 var uploader = new Uploader();
 
-exporter.process = function(url, callback) {
-	uploader.process(id(), url, callback);
+exports.process = function(url, callback) {
+
+    if(url.indexOf("http") >= 0) {
+        var tmpUrl = path.resolve(__dirname, "./" + id() + ".jpg"); 
+        http.get({ url: url }, tmpUrl, function (error, result) {
+            if (error) {
+                callback(error, null);
+            } else {
+                uploader.process(id(), tmpUrl, function(err, urls) {
+                    fs.unlink(tmpUrl, function() {
+                        callback(err, urls);
+                    }); 
+                });
+            }
+        });
+    } else {
+        uploader.process(id(), path.resolve(__dirname, url), callback);
+    }
 }
 
 function s4() {
@@ -50,6 +69,6 @@ function s4() {
 };
 
 function id() {
-	return s4() + s4() + s4() + new Date.getTime();
+	return s4() + s4() + s4() + new Date().getTime();
 }
 
