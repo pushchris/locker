@@ -32,7 +32,7 @@ var locker = function() {
 	this.adapters = [];
 	this.directory = "adapters";
 	this.tempo = 6 * 1000;
-	this.startDate = new Date('1975-01-01');
+	this.startDate = new Date(0); //Earliest date possible
 
 	this.start = function() {
 		var _this = this;
@@ -46,7 +46,7 @@ var locker = function() {
 	}
 
 	this.add = function(data) {
-		job.create(data.type, data).save();
+		job.create(data.type, data).attempts(5).save();
 	}
 
 	this.retrieve = function(parameters, callback) {
