@@ -3,6 +3,7 @@ var fs = require('fs'),
 	events = require('events'),
 	path = require('path'),
 	mongoose = require('mongoose'),
+	kue = require('kue'),
 	config = require('../config.json');
 	
 var db = mongoose.connect(config.uristring, function (err, res) {
@@ -11,6 +12,14 @@ var db = mongoose.connect(config.uristring, function (err, res) {
 	else
 		console.log('Succeeded connected to: ' + config.uristring);
 });
+
+kue.redis.createClient = function() {
+	var client = redis.createClient(port, ip);
+	client.aut('password');
+	return client;
+}
+
+var jobs = kue.createQueue();
 
 var Adapter = require('./adapter'),
 	Image = require('./image'),
@@ -33,40 +42,41 @@ var locker = function() {
 		});
 		
 		this.findAdapters();
+		this.workIt();
 	}
 
-	this.add = function(callback) {
-		this.adapters.push(new Adapter(callback));
+	this.add = function(data) {
+		job.create(data.type, data).save();
 	}
 
-	this.store = function() {
-		for(i in this.adapters) {
-			this.adapters[i].retrieve(function(content) {
-			    var block = new Block();
-				if(Array.isArray(content)) {
-					for(item in content) {
-						process(content[item], function(err, content) {
-							block.store(content);
-						})
-					}
-				} else {
-					process(content, function(err, content) {
-						block.store(content);
-					});
-				}
-			});
-		}
-		function process(content, callback) {
-			if(content.type == "image") {
-				Image.process(content.content.url, function(err, urls) {
-					content.content.url = urls;
-					callback(err, content);
-				});
-			} else {
-				callback(null, content);
-			}
-		}
-	}
+	// this.store = function() {
+	// 	for(i in this.adapters) {
+	// 		this.adapters[i].retrieve(function(content) {
+	// 		    var block = new Block();
+	// 			if(Array.isArray(content)) {
+	// 				for(item in content) {
+	// 					process(content[item], function(err, content) {
+	// 						block.store(content);
+	// 					})
+	// 				}
+	// 			} else {
+	// 				process(content, function(err, content) {
+	// 					block.store(content);
+	// 				});
+	// 			}
+	// 		});
+	// 	}
+	// 	function process(content, callback) {
+	// 		if(content.type == "image") {
+	// 			Image.process(content.content.url, function(err, urls) {
+	// 				content.content.url = urls;
+	// 				callback(err, content);
+	// 			});
+	// 		} else {
+	// 			callback(null, content);
+	// 		}
+	// 	}
+	// }
 
 	this.retrieve = function(type, name, callback) {
 		Block.retrieve(type, name, callback);
@@ -74,6 +84,15 @@ var locker = function() {
 
 	this.lastWas = function(type, name, callback) {
 		Block.lastWas(type, name, callback);
+	}
+
+	this.workIt = function() {
+		this.children = [];
+		var numCPUs = require('os').cpus().length,
+			cp = require('child_process');
+		for(int i = 0; i < numCPUs; i++) {
+			children.push(cp.fork(__diname + '/worker.js'));
+		}
 	}
 
 	this.findAdapters = function() {
@@ -98,7 +117,7 @@ var locker = function() {
 	this.fetchInterval = function() {
 		var _this = this;
 		this.interval = setTimeout(function() {
-			_this.store();
+			_this.emit("run");
 		}, this.tempo);
 	}
 }
