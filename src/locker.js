@@ -45,7 +45,7 @@ var locker = function() {
 			    var block = new Block();
 				if(Array.isArray(content)) {
 					for(item in content) {
-						process(content, function(err, content) {
+						process(content[item], function(err, content) {
 							block.store(content);
 						})
 					}
@@ -57,7 +57,7 @@ var locker = function() {
 			});
 		}
 		function process(content, callback) {
-			if(content.type =="image") {
+			if(content.type == "image") {
 				Image.process(content.content.url, function(err, urls) {
 					content.content.url = urls;
 					callback(err, content);
@@ -97,7 +97,7 @@ var locker = function() {
 
 	this.fetchInterval = function() {
 		var _this = this;
-		this.interval = setInterval(function() {
+		this.interval = setTimeout(function() {
 			_this.store();
 		}, this.tempo);
 	}

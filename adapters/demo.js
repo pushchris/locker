@@ -1,4 +1,6 @@
+
 module.exports = function(locker) {
+/*
     
     locker.add(function(callback) {
         
@@ -43,5 +45,6 @@ module.exports = function(locker) {
             tags: ["vehicle", "rpm", "revolutions", "car"]
         });
     });
+*/
 
 }

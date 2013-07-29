@@ -19,22 +19,22 @@ BlockSchema.methods.store = function(item, callback) {
     });
 }
 
-BlockSchema.methods.retrieve = function(type, name, callback) {
+BlockSchema.statics.retrieve = function(type, name, callback) {
 
     if(!callback) callback = function(){};
 
-    this.model('Block').find({ type: type, name: name }, function(err, results) {
+    this.find({ type: type, name: name }, function(err, results) {
         callback(err, results);
     });
 }
 
-BlockSchema.methods.lastWas = function(type, name, callback) {
+BlockSchema.statics.lastWas = function(type, name, callback) {
 
     if(!callback) callback = function(){};
 
-    this.model('Block').findOne({ type: type, name: name })
+    this.findOne({ type: type, name: name })
         .sort({date : -1}).exec(function(err, result) {
-        if(err) {
+        if(err || !result) {
             callback(err, null);
         } else {
             callback(err, result.date);
