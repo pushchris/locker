@@ -7,10 +7,11 @@ var fs = require('fs'),
 	config = require('../config.json');
 	
 var db = mongoose.connect(config.uristring, function (err, res) {
-	if (err)
+	if (err) {
 		console.error('ERROR connecting to: ' + config.uristring + '. ' + err);
-	else
+	} else {
 		console.log('Succeeded connected to: ' + config.uristring);
+	}
 });
 
 kue.redis.createClient = function() {
@@ -22,7 +23,6 @@ kue.redis.createClient = function() {
 var jobs = kue.createQueue();
 
 var Adapter = require('./adapter'),
-	Image = require('./image'),
 	Block = require('../schema/Block');
 
 var locker = function() {
@@ -49,37 +49,8 @@ var locker = function() {
 		job.create(data.type, data).save();
 	}
 
-	// this.store = function() {
-	// 	for(i in this.adapters) {
-	// 		this.adapters[i].retrieve(function(content) {
-	// 		    var block = new Block();
-	// 			if(Array.isArray(content)) {
-	// 				for(item in content) {
-	// 					process(content[item], function(err, content) {
-	// 						block.store(content);
-	// 					})
-	// 				}
-	// 			} else {
-	// 				process(content, function(err, content) {
-	// 					block.store(content);
-	// 				});
-	// 			}
-	// 		});
-	// 	}
-	// 	function process(content, callback) {
-	// 		if(content.type == "image") {
-	// 			Image.process(content.content.url, function(err, urls) {
-	// 				content.content.url = urls;
-	// 				callback(err, content);
-	// 			});
-	// 		} else {
-	// 			callback(null, content);
-	// 		}
-	// 	}
-	// }
-
-	this.retrieve = function(type, name, callback) {
-		Block.retrieve(type, name, callback);
+	this.retrieve = function(parameters, callback) {
+		Block.retrieve(parameters, callback);
 	}
 
 	this.lastWas = function(type, name, callback) {

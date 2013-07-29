@@ -4,6 +4,7 @@ var mongoose = require('mongoose'),
 var BlockSchema = new Schema({
     type: { type: String, required: true },
     name: { type: String },
+    source: { type: String },
     content: mongoose.Schema.Types.Mixed,
     tags: { type: [String] },
     date: { type: Date, default: Date.now }
@@ -19,11 +20,11 @@ BlockSchema.methods.store = function(item, callback) {
     });
 }
 
-BlockSchema.statics.retrieve = function(type, name, callback) {
+BlockSchema.statics.retrieve = function(parameters, callback) {
 
     if(!callback) callback = function(){};
 
-    this.find({ type: type, name: name }, function(err, results) {
+    this.find(parameters, function(err, results) {
         callback(err, results);
     });
 }

@@ -11,7 +11,7 @@ kue.redis.createClient = function() {
 
 var jobs = kue.createQueue();
 
-jobs.process('image', 3, function(job, callback) {
+jobs.process('image', function(job, callback) {
 	image.process(job.data.content.url, function(err, urls) {
 		jobs.data.content.url = urls;
 		Block.store(jobs.data);
