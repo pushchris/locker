@@ -45,8 +45,6 @@ var Uploader = papercut.Schema(function(schema){
 var uploader = new Uploader();
 
 exports.process = function(url, callback) {
-    console.log(url);
-
     if(url.indexOf("http") >= 0) {
         var tmpUrl = path.resolve(__dirname, "./" + id() + ".jpg"); 
         http.get({ url: url }, tmpUrl, function (error, result) {

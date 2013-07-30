@@ -8,7 +8,6 @@ var oauth = {
     token: config.tumblr.token,
     token_secret: config.tumblr.tocken_secret
 }
-console.log(config);
 
 var blog = new Blog(config.tumblr.site, oauth);
 

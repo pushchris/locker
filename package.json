@@ -9,6 +9,7 @@
     "http-get": "x",
     "tumblr": "x",
     "tempodb": "x",
+    "redis": "x",
     "kue": "x"
   },
   "scripts": {

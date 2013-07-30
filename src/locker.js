@@ -3,6 +3,7 @@ var fs = require('fs'),
 	events = require('events'),
 	path = require('path'),
 	mongoose = require('mongoose'),
+	redis = require('redis'),
 	kue = require('kue'),
 	config = require('../config.json');
 	
@@ -15,10 +16,11 @@ var db = mongoose.connect(config.uristring, function (err, res) {
 });
 
 kue.redis.createClient = function() {
-	var client = redis.createClient(port, ip);
-	client.aut('password');
+	var client = redis.createClient(config.redis.port, config.redis.ip);
 	return client;
 }
+
+kue.app.listen(4400);
 
 var jobs = kue.createQueue();
 
@@ -46,7 +48,7 @@ var locker = function() {
 	}
 
 	this.add = function(data) {
-		job.create(data.type, data).attempts(5).save();
+		jobs.create(data.type, data).attempts(5).save();
 	}
 
 	this.retrieve = function(parameters, callback) {
@@ -61,9 +63,9 @@ var locker = function() {
 		this.children = [];
 		var numCPUs = require('os').cpus().length,
 			cp = require('child_process');
-		for(int i = 0; i < numCPUs; i++) {
-			children.push(cp.fork(__diname + '/worker.js'));
-		}
+		//for(var i = 0; i < numCPUs; i++) {
+			//this.children.push(cp.fork(__dirname + '/worker.js'));
+		//}
 	}
 
 	this.findAdapters = function() {

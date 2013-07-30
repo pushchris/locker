@@ -29,11 +29,11 @@ BlockSchema.statics.retrieve = function(parameters, callback) {
     });
 }
 
-BlockSchema.statics.lastWas = function(type, name, callback) {
+BlockSchema.statics.lastWas = function(type, source, callback) {
 
     if(!callback) callback = function(){};
 
-    this.findOne({ type: type, name: name })
+    this.findOne({ type: type, source: source })
         .sort({date : -1}).exec(function(err, result) {
         if(err || !result) {
             callback(err, null);
