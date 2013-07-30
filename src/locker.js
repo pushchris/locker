@@ -55,8 +55,13 @@ var locker = function() {
 		Block.retrieve(parameters, callback);
 	}
 
-	this.lastWas = function(type, name, callback) {
-		Block.lastWas(type, name, callback);
+	this.lastWas = function(type, source, callback) {
+		Block.lastWas(type, source, function(err, date) {
+			if(err || !date) {
+                date = locker.startDate;
+            }
+            callback(err, date);
+		});
 	}
 
 	this.workIt = function() {

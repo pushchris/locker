@@ -10,7 +10,8 @@
     "tumblr": "x",
     "tempodb": "x",
     "redis": "x",
-    "kue": "x"
+    "kue": "x",
+    "node-pocket": "x"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

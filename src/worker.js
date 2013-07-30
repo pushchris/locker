@@ -24,10 +24,11 @@ jobs.process('image', function(job, callback) {
     var block = new Block();
 	try {
     	image.process(job.data.content.url, function(err, urls) {
+    		if (err) return callback(err);
     		job.data.content.url = urls;
     		block.store(job.data, function(err, entry) {
                 console.error(err);
-                if (err) return done(err);
+                if (err) return callback(err);
                 callback();
     		});
     	});
@@ -35,15 +36,27 @@ jobs.process('image', function(job, callback) {
         console.log("THERE WAS AN ERROR");
         console.log(job.data.content.url);
         console.error(err);
+        callback(err);
     }
 });
 
 jobs.process('metric', 20, function(job, callback) {
-	new Block().store(job.data);
-	callback();
+	new Block().store(job.data, function(err, entry) {
+		if (err) return callback(err);
+		callback();
+	});
 });
 
 jobs.process('location', 20, function(job, callback) {
-	new Block().store(job.data);
-	callback();
+	new Block().store(job.data, function(err, entry) {
+		if (err) return callback(err);
+		callback();
+	});
+});
+
+jobs.process('link', 20, function(job, callback) {
+	new Block().store(job.data, function(err, entry) {
+		if (err) return callback(err);
+		callback();
+	});
 });

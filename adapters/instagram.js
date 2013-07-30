@@ -44,9 +44,6 @@ module.exports = function(locker) {
 
     locker.on("run", function() {
         locker.lastWas('image', 'instagram', function(err, date) {
-            if(err || !date) {
-                date = locker.startDate;
-            }
             fetch(date);
         });
     });
