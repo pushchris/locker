@@ -1,14 +1,27 @@
 /*
+try {
 var Pocket = require('node-pocket'),
     config = require('../config.json'),
     pocket = new Pocket(config.pocket.consumer_key);
-
+}catch(e) {
+    console.log(e);
+}
 */
+
 
 module.exports = function(locker) {
 /*
+
+    console.log(config);
+    console.log(pocket);
+    pocket.getRequestToken({ url: "http://127.0.0.1:8080/get-access-token" }, function(err, result) {
+        console.log(result);
+    });
     
-    var fetch = function(date) {
+*/
+    
+    /*
+var fetch = function(date) {
         pocket.get({ since: date.getTime() }, function(err, data) {
             console.log(data);
             var list = data.list;

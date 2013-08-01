@@ -19,7 +19,9 @@ module.exports = function(locker) {
         function recurse() {
             blog.photo({ limit: 20, offset: index }, function(err, blog) {
                 var images = blog.posts;
-                if(err || images.length <= 0) {
+                if(!proceed) {
+                    return;
+                } else if(err || images.length <= 0) {
                     proceed = false;
                 } else {
                     for(i in images) {
@@ -41,7 +43,6 @@ module.exports = function(locker) {
                         }
                     }
                     index += 20;
-                    console.log("indexed" + index);
                     recurse();
                 }
             });

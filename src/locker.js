@@ -56,9 +56,10 @@ var locker = function() {
 	}
 
 	this.lastWas = function(type, source, callback) {
+	    var _this = this;
 		Block.lastWas(type, source, function(err, date) {
 			if(err || !date) {
-                date = locker.startDate;
+                date = _this.startDate;
             }
             callback(err, date);
 		});

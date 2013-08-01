@@ -11,6 +11,7 @@
     "tempodb": "x",
     "redis": "x",
     "kue": "x",
+    "instagram-node-lib": "x",
     "node-pocket": "x"
   },
   "scripts": {
