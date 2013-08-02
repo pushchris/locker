@@ -2,6 +2,7 @@ var kue = require('kue'),
 	redis = require('redis'),
 	mongoose = require('mongoose'),
 	image = require('./image'),
+	video = require('./video'),
 	config = require('../config.json'),
 	Block = require('../schema/Block');
 
@@ -38,6 +39,29 @@ jobs.process('image', function(job, callback) {
         console.error(err);
         callback(err);
     }
+});
+
+jobs.process('video', function(job, callback) {
+	var block = new Block();
+	try {
+		video.convert(
+			job.data.content.url, 
+			job.data.content.destination, 
+			function(percent) {
+				job.progress(percent, 100);
+			}, 
+			function(err) {
+				if(err) return callback(err);
+				job.data.content.url = job.data.content.destination;
+				delete job.data.content.destination;
+				block.store(jod.data, function(err, callback) {
+					if(err) return callback(err);
+				});
+			}
+		);
+	} catch(err) {
+		callback(err);
+	}
 });
 
 jobs.process('metric', 20, function(job, callback) {
