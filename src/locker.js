@@ -24,14 +24,12 @@ kue.app.listen(4400);
 
 var jobs = kue.createQueue();
 
-var Adapter = require('./adapter'),
-	Block = require('../schema/Block');
+var Block = require('../schema/Block');
 
 var locker = function() {
 
 	events.EventEmitter.call(this);
 
-	this.adapters = [];
 	this.directory = "adapters";
 	this.tempo = 6 * 1000;
 	this.startDate = new Date(0); //Earliest date possible

@@ -6,6 +6,7 @@
   "dependencies": {
     "mongoose": "x",
     "papercut": "x",
+    "fluent-ffmpeg": "x",
     "http-get": "x",
     "tumblr": "x",
     "tempodb": "x",
