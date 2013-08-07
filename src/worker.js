@@ -21,14 +21,13 @@ var db = mongoose.connect(config.uristring, function (err, res) {
 
 var jobs = kue.createQueue();
 
-jobs.process('image', function(job, callback) {
+jobs.process('image', 2, function(job, callback) {
     var block = new Block();
 	try {
     	image.process(job.data.content.url, function(err, urls) {
     		if (err) return callback(err);
     		job.data.content.url = urls;
     		block.store(job.data, function(err, entry) {
-                console.error(err);
                 if (err) return callback(err);
                 callback();
     		});
@@ -54,8 +53,9 @@ jobs.process('video', function(job, callback) {
 				if(err) return callback(err);
 				job.data.content.url = job.data.content.destination;
 				delete job.data.content.destination;
-				block.store(jod.data, function(err, callback) {
+				block.store(job.data, function(err, entry) {
 					if(err) return callback(err);
+					callback();
 				});
 			}
 		);
