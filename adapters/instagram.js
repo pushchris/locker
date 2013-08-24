@@ -11,7 +11,7 @@ module.exports = function(locker) {
 
     var fetch = function(date) {
         instagram.users.search({
-            q: 'chrisanderson93',
+            q: config.instagram.username,
             complete: function(data) { 
                 instagram.users.recent({
                     user_id: data[0].id,
